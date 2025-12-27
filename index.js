@@ -17,7 +17,7 @@ app.use ((req,res,next) =>{
         token = token.replace("Bearer ", "");
 
           jwt.verify(token,"kv-secret37",
-            (err,decoded) =>{
+            (err,decoded) =>{ 
                 if(!err){
                     req.user = decoded;
                     
@@ -25,7 +25,7 @@ app.use ((req,res,next) =>{
 
             });
     }
-    
+       
 next()
 });
 
