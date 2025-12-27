@@ -41,4 +41,5 @@ const userSchema = new mongoose.Schema({
  const User = mongoose.model("User",userSchema)
    //userModel magin DB collection hadgnna
    
-   export default User;
+   export default User;  
+   
