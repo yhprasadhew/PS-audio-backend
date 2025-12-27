@@ -55,7 +55,5 @@ export function loginUser(req,res){
 
     }
       
-    
-
 
 export default User;
