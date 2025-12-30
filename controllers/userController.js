@@ -1,7 +1,9 @@
 import User from "../models/user.js" ;
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";        
+import dotenv from "dotenv";
+
+dotenv.config(); 
 
 
 
@@ -43,7 +45,8 @@ export function loginUser(req,res){
                     firstName : user.firstname,
                     lastName : user.lastName,
                     email : user.email,
-                    role : user.role
+                    role : user.role,
+                    profilePicture : user.profilePicture
 
 
 
