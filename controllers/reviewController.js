@@ -15,7 +15,7 @@ export function addReview(req,res){
   data.email = req.user.email;
 
 
-    const newReview = new review(data); 
+    const newReview = new Review(data); 
 
     newReview.save()
     .then(() =>{
@@ -44,3 +44,74 @@ export function getReviews(req,res){
             })  
         }
     }
+
+    export function deleteReview(req,res){
+        const email = req.params.email;
+        if(req.user == null ){
+            res.status(403).json({
+                message: "please login and try again"
+            });
+            return
+        }
+        
+if(req.user.role == "admin"){
+        Review.deleteOne({email: email})
+        .then(() =>{
+            res.json({message: "review deleted successfully"});
+        })
+        .catch((error) =>{
+            res.status(500).json({error: "review deletion failed"});
+        });
+        return
+        
+        if(req.user.role =="customer"){         
+        
+            if(req.user.email == email){  //eya dpuma email eka d....
+
+                Review.deleteOne({email: email})
+                .then(() =>{
+                    res.json({message: "review deleted successfully"});     
+                
+            } ).catch(() =>{
+                
+
+            
+                res.status(500).json({error: "review deletion failed"});
+            });
+            } else{
+                res.status(403).json({
+                    message: "you are not authorized to do this action"
+                }); 
+            }
+    }
+}
+}
+
+export function approveReview(req,res){
+    const reviewId = req.params.reviewId;
+
+    if(req.user == null) {
+        res.status(401).json({
+            message: "please login and try again"
+        });
+        return
+    }
+    if(req.user.role == "admin"){
+        Review.updateOne(
+            {_email :email,
+            },
+            {
+                isApproved : true,
+            }
+        ).then(() =>{
+            res.json({message: "review approved successfully"});
+        } ).catch(() =>{
+            res.status(500).json({error: "review approval failed"});
+        });
+    }else{ 
+        res.status(403).json({
+            message: "you are not admin to do this action"
+        });
+       
+    }
+}
