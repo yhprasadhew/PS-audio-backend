@@ -46,7 +46,8 @@ export function loginUser(req,res){
                     lastName : user.lastName,
                     email : user.email,
                     role : user.role,
-                    profilePicture : user.profilePicture
+                    profilePicture : user.profilePicture,
+                    phone : user.phone,
 
 
 
@@ -66,8 +67,29 @@ export function loginUser(req,res){
         });
 
     }
-   
     
-  
+  export function isItAdmin(req){
 
-export default User;
+     let isAdmin= false;
+
+    if(req.user != null) {
+        if (req.user.role == "admin"){
+        isAdmin = true;
+    }
+}
+return isAdmin; 
+  }
+   
+ export function isItCustomer(req){
+    console.log("req.user:", req.user);  // check if user exists
+    let isCustomer = false;
+
+    if(req.user != null) {
+        console.log("req.user.role:", req.user.role); // check role
+        if (req.user.role == "customer"){
+            isCustomer = true;
+        }
+    }
+
+    return isCustomer; 
+}
