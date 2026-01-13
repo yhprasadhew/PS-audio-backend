@@ -1,95 +1,91 @@
-import User from "../models/user.js" ;
+import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-dotenv.config(); 
+dotenv.config();
 
+/* ================= REGISTER ================= */
 
+export function registerUser(req, res) {
+  const data = req.body;
+  data.password = bcrypt.hashSync(data.password, 10);
 
+  const newUser = new User(data);
 
-
-export function registerUser(req,res){
-
-    const data = req.body;
-    data.password = bcrypt.hashSync(data.password,10)
-    
-
-    const newUser = new User(data)
-
-    newUser.save().then
-    (() =>{
-        res.json({ message : "User registerd successfully"})
-    }).catch((error)=>{
-        res.status(500).json({error : "user register fail"})
+  newUser
+    .save()
+    .then(() => {
+      res.json({ message: "User registered successfully" });
     })
-
+    .catch(() => {
+      res.status(500).json({ error: "User register failed" });
+    });
 }
 
-export function loginUser(req,res){
-    const data = req.body;
-    User.findOne({
-        email: data.email
-        
-    }).then(
-      (user) =>{
-        if(user==null){
-            res.status(404).json({error:"User not found"})
-        }else{
-            
+/* ================= LOGIN ================= */
 
-            const isPasswordCorrect = bcrypt.compareSync(data.password,user.password);
+export function loginUser(req, res) {
+  const data = req.body;
 
-            if(isPasswordCorrect){
-                const token = jwt.sign({
-                    firstName : user.firstname,
-                    lastName : user.lastName,
-                    email : user.email,
-                    role : user.role,
-                    profilePicture : user.profilePicture,
-                    phone : user.phone,
-
-
-
-
-                },process.env.JWT_SECRET,
-            )
-
-                res.json({
-                     message: "login sucessfull",token: token
-                    });
-            }else{
-                res.status(401).json({error: "login failed"});
-            }
-
-            }
-        
-        });
-
+  User.findOne({ email: data.email }).then((user) => {
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
-    
-  export function isItAdmin(req){
 
-     let isAdmin= false;
+    const isPasswordCorrect = bcrypt.compareSync(
+      data.password,
+      user.password
+    );
 
-    if(req.user != null) {
-        if (req.user.role == "admin"){
-        isAdmin = true;
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ error: "Login failed" });
     }
+
+    // JWT
+    const token = jwt.sign(
+      {
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET
+    );
+
+    // ⭐ FIX: send user object
+    res.json({
+      message: "login successful",
+      token: token,
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profilePicture: user.profilePicture,
+        phone: user.phone,
+      },
+    });
+  });
 }
-return isAdmin; 
+
+/* ================= ROLE CHECKERS ================= */
+
+export function isItAdmin(req) {
+  let isAdmin = false;
+
+  if (req.user && req.user.role === "admin") {
+    isAdmin = true;
   }
-   
- export function isItCustomer(req){
-    console.log("req.user:", req.user);  // check if user exists
-    let isCustomer = false;
 
-    if(req.user != null) {
-        console.log("req.user.role:", req.user.role); // check role
-        if (req.user.role == "customer"){
-            isCustomer = true;
-        }
-    }
+  return isAdmin;
+}
 
-    return isCustomer; 
+export function isItCustomer(req) {
+  let isCustomer = false;
+
+  if (req.user && req.user.role === "customer") {
+    isCustomer = true;
+  }
+
+  return isCustomer;
 }
