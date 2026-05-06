@@ -10,7 +10,7 @@ import inquiryRouter from "./routes/inquiryRouter.js";
 import cors from "cors";
 
 dotenv.config();
-
+//added
 const app =express()
 
 app.use(cors());
