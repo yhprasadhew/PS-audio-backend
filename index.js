@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 import reviewRouter from "./routes/reviewRoute.js";
 import inquiryRouter from "./routes/inquiryRouter.js";
 import cors from "cors";
-
+//ghee
 dotenv.config();
 //added nowwww
 const app =express()
