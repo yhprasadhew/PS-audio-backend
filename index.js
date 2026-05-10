@@ -14,7 +14,7 @@ dotenv.config();
 const app =express()
 
 app.use(cors());
-
+//cors good
 app.use(bodyParser.json())
 
 app.use ((req,res,next) =>{
