@@ -8,9 +8,9 @@ import dotenv from "dotenv";
 import reviewRouter from "./routes/reviewRoute.js";
 import inquiryRouter from "./routes/inquiryRouter.js";
 import cors from "cors";
-/
+
 dotenv.config();
-//added nowwww
+//added 
 const app =express()
 
 app.use(cors());
